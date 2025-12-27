@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Address Book</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form {
+      background-color: #e3f2fd;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+    }
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .add-btn {
+      flex: 1;
+      background-color: orange;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .cancel-btn {
+      flex: 1;
+      background-color: #ccc;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .add-btn:hover {
+      background-color: darkorange;
+    }
+    .cancel-btn:hover {
+      background-color: #999;
+    }
+    .contact-list {
+      margin-top: 30px;
+    }
+    .contact-item {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+    .contact-item:hover {
+      background-color: #f0f0f0;
+    }
+    .contact-details {
+      margin-top: 10px;
+      background-color: #eef;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .delete-btn:hover { background-color: #da190b; }
+    @media (max-width: 600px) {
+      .buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .add-btn, .cancel-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Address Book</h2>
+    <form id="contactForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" required>
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" required>
+
+      <label for="address">Address</label>
+      <textarea id="address" rows="3" required></textarea>
+
+      <label for="city">City</label>
+      <input type="text" id="city" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" required>
+
+      <div class="buttons">
+        <button type="submit" class="add-btn">Add</button>
+        <button type="reset" class="cancel-btn">Cancel</button>
+        <button type="button" class="delete-btn">Delete All</button>
+      </div>
+    </form>
+
+    <div class="contact-list" id="contactList"></div>
+    <p><em>Click on contact to view details</em></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const contactList = document.getElementById('contactList');
+
+    // storage key
+    const STORAGE_KEY = 'addressbook_contacts_v1';
+
+    // load contacts from localStorage
+    function loadContacts() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    // save contacts to localStorage
+    function saveContacts(arr) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }
+
+    // render contact list
+    function renderContacts() {
+      contactList.innerHTML = '';
+      const contacts = loadContacts();
+      contacts.forEach((c, idx) => {
+        const row = document.createElement('div');
+        row.className = 'contact-row';
+
+        const item = document.createElement('div');
+        item.className = 'contact-item';
+        item.textContent = c.name || '(No name)';
+
+        const del = document.createElement('button');
+        del.className = 'delete-btn';
+        del.textContent = 'Delete';
+        del.setAttribute('aria-label', 'Delete contact');
+        del.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          deleteContact(idx);
+        });
+
+        row.appendChild(item);
+        row.appendChild(del);
+
+        const details = document.createElement('div');
+        details.className = 'contact-details';
+        details.innerHTML = `
+          <strong>Name:</strong> ${c.name}<br>
+          <strong>Phone:</strong> ${c.phone}<br>
+          <strong>Address:</strong> ${c.address}<br>
+          <strong>City:</strong> ${c.city}<br>
+          <strong>Email:</strong> ${c.email}
+        `;
+        details.style.display = 'none';
+
+        item.addEventListener('click', () => {
+          details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        });
+
+        contactList.appendChild(row);
+        contactList.appendChild(details);
+      });
+    }
+
+    // delete contact by index
+    function deleteContact(index) {
+      const contacts = loadContacts();
+      if (index >= 0 && index < contacts.length) {
+        contacts.splice(index, 1);
+        saveContacts(contacts);
+        renderContacts();
+      }
+    }
+
+    // handle form submit
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const contact = {
+        name: document.getElementById('name').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        email: document.getElementById('email').value
+      };
+      const contacts = loadContacts();
+      contacts.push(contact);
+      saveContacts(contacts);
+      renderContacts();
+      form.reset();
+    });
+
+    // initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderContacts();
+    });
+  </script>
+</body>
+</html>
