@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Responsive Multi-Step Registration</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      width: 100%;
+      height: auto;
+    }
+    
+    body { 
+      font-family: Arial, sans-serif; 
+      background-color: #f5f5f5;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+    
+    #regForm {
+      width: 100%;
+      max-width: 500px;
+      background-color: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+    
+    h3 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+      background-color: white;
+      cursor: pointer;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+    }
+    
+    .form-page { display: none; }
+    .form-page.active { display: block; }
+    
+    .nav-buttons { 
+      margin-top: 20px; 
+      text-align: center;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    button { 
+      padding: 10px 20px; 
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    
+    button[onclick*="nextPage"] {
+      background-color: #4CAF50;
+      color: white;
+    }
+    
+    button[onclick*="nextPage"]:hover {
+      background-color: #45a049;
+    }
+    
+    button[onclick*="prevPage"] {
+      background-color: #2196F3;
+      color: white;
+    }
+    
+    button[onclick*="prevPage"]:hover {
+      background-color: #0b7dda;
+    }
+    
+    button[onclick*="submitForm"] {
+      background-color: #ff9800;
+      color: white;
+    }
+    
+    button[onclick*="submitForm"]:hover {
+      background-color: #e68900;
+    }
+    
+    button[onclick*="deleteAll"] {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    button[onclick*="deleteAll"]:hover {
+      background-color: #da190b;
+    }
+    
+    .output { 
+      margin-top: 30px;
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+    }
+    
+    .person { 
+      margin: 10px 0; 
+      cursor: pointer; 
+      color: #2196F3; 
+      text-decoration: underline;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+    }
+    
+    .person:hover {
+      background-color: #e0e0e0;
+    }
+    
+    .details { 
+      display: none; 
+      margin-left: 20px;
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-left: 3px solid #2196F3;
+    }
+    
+    @media (max-width: 600px) {
+      body { font-size: 14px; }
+      button { padding: 8px 16px; }
+      #regForm { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<h2>Account Registration</h2>
+
+<form id="regForm">
+ <!-- Page 1: Bio-data -->
+  <div class="form-page active" id="page1">
+    <h3>Bio-data</h3>
+    <input type="text" placeholder="Full Name" id="name" required><br><br>
+    <input type="email" placeholder="Email" id="email" required><br><br>
+    <input type="date" placeholder="Date of Birth" id="dob" required><br><br>
+    <input type="text" placeholder="Genotype" id="genotype" required><br><br>
+    <input type="text" placeholder="City" id="city" required><br><br>
+    <input type="text" placeholder="Address" id="address" required><br><br>
+    <div class="nav-buttons">
+      <button type="button" onclick="nextPage(2)">Next</button>
+    </div>
+  </div>
+  <!-- Page 2: Education -->
+  <div class="form-page" id="page2">
+    <h3>Education</h3>
+    <input type="text" placeholder="Highest Qualification" id="education"><br><br>
+    <input type="text" placeholder="Educational Achievements" id="achievements"><br><br>
+    <div class="nav-buttons">
+      <button type="button" onclick="prevPage(1)">Previous</button>
+      <button type="button" onclick="nextPage(3)">Next</button>
+    </div>
+  </div>
+
+  <!-- Page 3: Work Experience -->
+  <div class="form-page" id="page3">
+    <h3>Work Experience</h3>
+    <input type="text" placeholder="Current Job Title" id="work"><br><br>
+    <input type="text" placeholder="Duration of Occupation" id="duration"><br><br>
+    <label for="previousJobs">Previous Job(s):</label><br>
+    <select id="previousJobs" required><br>
+      <option value="">-- Select --</option>
+      <option value="none">None</option>
+      <option value="1">1 Previous Job</option>
+      <option value="2">2 Previous Jobs</option>
+      <option value="3">3 or More</option>
+    </select><br><br>
+    <div class="nav-buttons">
+      <button type="button" onclick="prevPage(2)">Previous</button>
+      <button type="button" onclick="nextPage(4)">Next</button>
+    </div>
+  </div>
+
+  <!-- Page 4: Next of Kin -->
+  <div class="form-page" id="page4">
+    <h3>Next of Kin</h3>
+    <input type="text" placeholder="Next of Kin Name" id="kin"><br><br>
+    <input type="date" placeholder="Date of Birth" id="kinDob"><br><br>
+    <input type="tel" placeholder="Phone Number" id="kinPhone"><br><br>
+    <div class="nav-buttons">
+      <button type="button" onclick="prevPage(3)">Previous</button>
+      <button type="button" onclick="nextPage(5)">Next</button>
+    </div>
+  </div>
+
+  <!-- Page 5: Reference -->
+  <div class="form-page" id="page5">
+    <h3>Reference</h3>
+    <input type="text" placeholder="Reference Name" id="reference"><br><br>
+    <input type="text" placeholder="Occupation" id="refOccupation"><br><br>
+    <input type="text" placeholder="Address" id="refAddress"><br><br>
+    <input type="text" placeholder="City" id="refCity"><br><br>
+    <input type="tel" placeholder="Phone Contact" id="refPhone"><br><br>
+    <input type="email" placeholder="Email" id="refEmail"><br><br>
+    <div class="nav-buttons">
+      <button type="button" onclick="prevPage(4)">Previous</button>
+      <button type="button" onclick="submitForm()">Submit</button>
+      <button type="button" onclick="deleteAll()">Delete</button>
+    </div>
+  </div>
+</form>
+
+<div class="output" id="output"></div>
+
+<script>
+  // Load data from localStorage on page load
+  window.addEventListener('load', function() {
+    loadFormData();
+    loadSubmittedData();
+  });
+
+  // Save form data to localStorage whenever user inputs data
+  function saveFormData() {
+    let formData = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      dob: document.getElementById('dob').value,
+      genotype: document.getElementById('genotype').value,
+      city: document.getElementById('city').value,
+      address: document.getElementById('address').value,
+      education: document.getElementById('education').value,
+      achievements: document.getElementById('achievements').value,
+      work: document.getElementById('work').value,
+      duration: document.getElementById('duration').value,
+      previousJobs: document.getElementById('previousJobs').value,
+      kin: document.getElementById('kin').value,
+      kinDob: document.getElementById('kinDob').value,
+      kinPhone: document.getElementById('kinPhone').value,
+      reference: document.getElementById('reference').value,
+      refOccupation: document.getElementById('refOccupation').value,
+      refAddress: document.getElementById('refAddress').value,
+      refCity: document.getElementById('refCity').value,
+      refPhone: document.getElementById('refPhone').value,
+      refEmail: document.getElementById('refEmail').value
+    };
+    localStorage.setItem('formData', JSON.stringify(formData));
+  }
+
+  // Load form data from localStorage
+  function loadFormData() {
+    let savedData = localStorage.getItem('formData');
+    if (savedData) {
+      let formData = JSON.parse(savedData);
+      document.getElementById('name').value = formData.name || '';
+      document.getElementById('email').value = formData.email || '';
+      document.getElementById('dob').value = formData.dob || '';
+      document.getElementById('genotype').value = formData.genotype || '';
+      document.getElementById('city').value = formData.city || '';
+      document.getElementById('address').value = formData.address || '';
+      document.getElementById('education').value = formData.education || '';
+      document.getElementById('achievements').value = formData.achievements || '';
+      document.getElementById('work').value = formData.work || '';
+      document.getElementById('duration').value = formData.duration || '';
+      document.getElementById('previousJobs').value = formData.previousJobs || '';
+      document.getElementById('kin').value = formData.kin || '';
+      document.getElementById('kinDob').value = formData.kinDob || '';
+      document.getElementById('kinPhone').value = formData.kinPhone || '';
+      document.getElementById('reference').value = formData.reference || '';
+      document.getElementById('refOccupation').value = formData.refOccupation || '';
+      document.getElementById('refAddress').value = formData.refAddress || '';
+      document.getElementById('refCity').value = formData.refCity || '';
+      document.getElementById('refPhone').value = formData.refPhone || '';
+      document.getElementById('refEmail').value = formData.refEmail || '';
+    }
+  }
+
+  // Save submitted data to localStorage
+  function saveSubmittedData(data) {
+    let submittedArray = JSON.parse(localStorage.getItem('submittedData')) || [];
+    submittedArray.push(data);
+    localStorage.setItem('submittedData', JSON.stringify(submittedArray));
+  }
+
+  // Load submitted data from localStorage
+  function loadSubmittedData() {
+    let submittedArray = JSON.parse(localStorage.getItem('submittedData')) || [];
+    let output = document.getElementById('output');
+    submittedArray.forEach(person => {
+      createPersonDiv(person, output);
+    });
+  }
+
+  // Create person div for submitted data
+  function createPersonDiv(person, outputElement) {
+    let personDiv = document.createElement('div');
+    personDiv.className = 'person';
+    personDiv.innerText = person.name;
+
+    let detailsDiv = document.createElement('div');
+    detailsDiv.className = 'details';
+    detailsDiv.innerHTML = `
+      <strong>Bio-data:</strong><br>
+      Email: ${person.email}<br>
+      Date of Birth: ${person.dob}<br>
+      Genotype: ${person.genotype}<br>
+      City: ${person.city}<br>
+      Address: ${person.address}<br><br>
+      
+      <strong>Education:</strong><br>
+      Qualification: ${person.education}<br>
+      Achievements: ${person.achievements}<br><br>
+      
+      <strong>Work Experience:</strong><br>
+      Job Title: ${person.work}<br>
+      Duration: ${person.duration}<br>
+      Previous Jobs: ${person.previousJobs}<br><br>
+      
+      <strong>Next of Kin:</strong><br>
+      Name: ${person.kin}<br>
+      Date of Birth: ${person.kinDob}<br>
+      Phone: ${person.kinPhone}<br><br>
+      
+      <strong>Reference:</strong><br>
+      Name: ${person.reference}<br>
+      Occupation: ${person.refOccupation}<br>
+      Address: ${person.refAddress}<br>
+      City: ${person.refCity}<br>
+      Phone: ${person.refPhone}<br>
+      Email: ${person.refEmail}
+    `;
+
+    personDiv.onclick = function() {
+      detailsDiv.style.display = detailsDiv.style.display === 'none' ? 'block' : 'none';
+    };
+
+    outputElement.appendChild(personDiv);
+    outputElement.appendChild(detailsDiv);
+  }
+
+  // Add event listeners to form inputs to auto-save
+  document.addEventListener('DOMContentLoaded', function() {
+    let inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+      input.addEventListener('change', saveFormData);
+      input.addEventListener('input', saveFormData);
+    });
+  });
+
+  function nextPage(pageNum) {
+    saveFormData();
+    document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + pageNum).classList.add('active');
+  }
+
+  function prevPage(pageNum) {
+    saveFormData();
+    document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + pageNum).classList.add('active');
+  }
+
+  function submitForm() {
+    let person = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      dob: document.getElementById('dob').value,
+      genotype: document.getElementById('genotype').value,
+      city: document.getElementById('city').value,
+      address: document.getElementById('address').value,
+      education: document.getElementById('education').value,
+      achievements: document.getElementById('achievements').value,
+      work: document.getElementById('work').value,
+      duration: document.getElementById('duration').value,
+      previousJobs: document.getElementById('previousJobs').value,
+      kin: document.getElementById('kin').value,
+      kinDob: document.getElementById('kinDob').value,
+      kinPhone: document.getElementById('kinPhone').value,
+      reference: document.getElementById('reference').value,
+      refOccupation: document.getElementById('refOccupation').value,
+      refAddress: document.getElementById('refAddress').value,
+      refCity: document.getElementById('refCity').value,
+      refPhone: document.getElementById('refPhone').value,
+      refEmail: document.getElementById('refEmail').value
+    };
+
+    let output = document.getElementById('output');
+    createPersonDiv(person, output);
+    saveSubmittedData(person);
+
+    document.getElementById('regForm').reset();
+    localStorage.removeItem('formData');
+    nextPage(1); // reset to first page
+  }
+
+  function deleteAll() {
+    document.getElementById('output').innerHTML = '';
+    localStorage.removeItem('submittedData');
+  }
+</script>
+
+</body>
+</html>
